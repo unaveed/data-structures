@@ -1,48 +1,73 @@
-#include "stdio.h"
-#include "stdlib.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 
-typedef struct Node {
+typedef struct node {
 	int val;
-	struct Node *next;
-} Node;
+	struct node *next;
+} node_t;
 
-void insertNode(Node* root, int n){
-	if (root == NULL){
-		root = (Node*)malloc(sizeof(Node));
-		root->val = n;
+node_t *head = NULL;
+
+void push_tail(int n){
+	if (head == NULL){
+		head = malloc(sizeof(node_t));
+		head->val = n;
+		head->next = NULL;
 	}
 	else {
-		while(root->next != NULL){
-//			printf("Node: %d\n", root->val);
-			root = root->next;
+		node_t *current = head;
+		while(current->next != NULL){
+			current = current->next;
 		}
-
-		Node *tmp = (Node*)malloc(sizeof(Node));
+		
+		node_t *tmp = malloc(sizeof(node_t));
 		tmp->val = n;
-		*root->next = tmp;
+		tmp->next = NULL;
+		current->next = tmp;
 	}
 }
 
-int deletenode(Node* root, int n){
-	if (root == NULL) return 0;
+void push_head(int n){
+	if (head == NULL) {
+		head = malloc(sizeof(node_t));
+		head->val = n;
+		head->next = NULL;
+	}
+	else {
+		node_t *curr_head = head;
+		node_t *new_node = malloc(sizeof(node_t));
+		new_node->val = n;
+		new_node->next = curr_head;
+		head = new_node;
+	}
+}
+
+int pop_head();
+int pop_tail();
+
+int deletenode(int n){
+	if (head == NULL) return -1;
 	
-	Node *prev = (Node*)malloc(sizeof(Node));
-	while(root != NULL){
-		if (root->val == n)
+	node_t *prev = malloc(sizeof(node_t));
+	node_t *current = head;
+
+	while(current!= NULL){
+		if (current->val == n)
 			break;
 		
-		prev = root;
-		root = root->next;
+		prev = current;
+		current= current->next;
+		if (current == NULL) return -1;
 	}
 
-	prev = root->next;
+	prev = current->next;
 
-	return 0;
+	return 1;
 }
 
-int length(Node* node){
-	struct Node* current = node;
+int length(){
+	node_t *current = head;
 	int count = 0;
 	while (current != NULL){
 		count++;
@@ -52,29 +77,27 @@ int length(Node* node){
 	return count;
 }
 
-void printList(Node* root){
-	while (root != NULL){
-		printf("[%d]->", root->val);
-		root = root->next;
+void printList(){
+	node_t *current = head;
+	while (current != NULL){
+		printf("[%d]->", current->val);
+		current= current->next;
 	}
 	printf("\n");
 }
 
 int main(){
-	Node *node = (Node*)malloc(sizeof(Node));
-	node->val = 3;
 	int i;
 
 	for(i = 0; i < 10; i++){
-		insertNode(node, i);		
+		push_head(i);		
 	}
 
-	//printf("Delete: %d\n", deleteNode(node, 3));
 
-	printf("%d", length(node));
-	printf("\n\n\n%d", node->val);
-	//printList(node);
-	free(node);
+	printf("%d\n", length());
+	printf("%d\n", head);
+	printList();
+	free(head);
 
 	return 0;
 }
