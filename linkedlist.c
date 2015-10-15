@@ -43,10 +43,34 @@ void push_head(int n){
 	}
 }
 
-int pop_head();
-int pop_tail();
+int pop_head(){
+	if (head == NULL){
+		return -1;	
+	}
 
-int deletenode(int n){
+	node_t *new_head = head->next;
+	int val = head->val;
+	head = new_head;
+	return val;
+}
+
+int pop_tail(){
+	if (head == NULL){
+		return -1;
+	}
+
+	node_t *current = head;
+	node_t *prev = NULL;
+	while(current->next != NULL){
+		prev = current;
+		current = current->next;
+	}
+	
+	prev->next = NULL;
+	return current->val;
+}
+
+int delete_node(int n){
 	if (head == NULL) return -1;
 	
 	node_t *prev = malloc(sizeof(node_t));
@@ -77,7 +101,7 @@ int length(){
 	return count;
 }
 
-void printList(){
+void print_list(){
 	node_t *current = head;
 	while (current != NULL){
 		printf("[%d]->", current->val);
@@ -90,14 +114,17 @@ int main(){
 	int i;
 
 	for(i = 0; i < 10; i++){
-		push_head(i);		
+		push_tail(i);		
 	}
 
-
 	printf("%d\n", length());
-	printf("%d\n", head);
-	printList();
-	free(head);
+	print_list();
+	
+	node_t *current;
+	while((current = head) != NULL){
+		head = head->next;
+		free(current);
+	}
 
 	return 0;
 }
